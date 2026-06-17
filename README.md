@@ -34,7 +34,7 @@ This structure is useful because each location directly stores its neighboring l
 
 ## Algorithms
 
-### 1. Dijkstra Algorithm
+### 1. Dijkstra's Algorithm
 
 Used to find the shortest path between two locations.
 
@@ -60,7 +60,7 @@ Runtime:
 O(V^2 + E)
 ```
 
-### 2. Breadth-First Search
+### 2. Breadth-First Search (BFS)
 
 Used to show all locations reachable from a start location.
 
@@ -92,22 +92,24 @@ This algorithm is fast and easy to understand, but it does not always guarantee 
 Runtime for `k` delivery stops:
 
 ```text
-O(k * (V^2 + E))
+O(k^2 * (V^2 + E))
 ```
+
+At each step, the algorithm compares all remaining delivery stops. For each possible next stop, it calls Dijkstra to find the shortest path from the current location.
 
 ## Project Structure
 
 ```text
 src/at/ac/hcw/delivery
-├── Main.java
-├── DeliveryApp.java
-├── Graph.java
-├── Edge.java
-├── PathResult.java
-├── Dijkstra.java
-├── BreadthFirstSearch.java
-├── DeliveryRoutePlanner.java
-└── DeliveryRoutePlannerTests.java
+|-- Main.java
+|-- DeliveryApp.java
+|-- Graph.java
+|-- Edge.java
+|-- PathResult.java
+|-- Dijkstra.java
+|-- BreadthFirstSearch.java
+|-- DeliveryRoutePlanner.java
+`-- DeliveryRoutePlannerTests.java
 ```
 
 ## How To Run
