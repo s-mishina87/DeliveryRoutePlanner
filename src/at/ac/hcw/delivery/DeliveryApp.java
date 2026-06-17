@@ -48,6 +48,7 @@ public class DeliveryApp {
                     break;
                 default:
                     System.out.println("Please choose a number from 1 to 6.");
+                    waitForEnter();
             }
 
             System.out.println();
@@ -148,6 +149,8 @@ public class DeliveryApp {
 
             if (location != null && !stops.contains(location)) {
                 stops.add(location);
+            } else if (location == null && !part.trim().isEmpty()) {
+                System.out.println("Unknown delivery stop ignored: " + part.trim());
             }
         }
 

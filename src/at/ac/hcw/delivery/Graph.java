@@ -16,6 +16,10 @@ public class Graph {
     }
 
     public void addUndirectedRoad(String firstLocation, String secondLocation, int distance) {
+        if (distance < 0) {
+            throw new IllegalArgumentException("Road distance must not be negative.");
+        }
+
         // Дорога добавляется два раза, потому что по ней можно ехать в обе стороны.
         addRoad(firstLocation, secondLocation, distance);
         addRoad(secondLocation, firstLocation, distance);

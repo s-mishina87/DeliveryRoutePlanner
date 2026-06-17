@@ -9,6 +9,7 @@ public class DeliveryRoutePlannerTests {
         testDijkstra();
         testBfs();
         testGreedy();
+        testInvalidInputCases();
 
         System.out.println("All tests passed.");
     }
@@ -71,6 +72,27 @@ public class DeliveryRoutePlannerTests {
         );
     }
 
+    private static void testInvalidInputCases() {
+        System.out.println("Testing invalid input cases...");
+        Graph graph = createTestGraph();
+
+        PathResult sameLocation = Dijkstra.findShortestPath(graph, "Warehouse", "Warehouse");
+        assertEquals(0, sameLocation.getDistance(), "Distance from a location to itself should be 0.");
+        assertEquals(List.of("Warehouse"), sameLocation.getPath(), "Path from a location to itself should contain only this location.");
+
+        PathResult unknownLocation = Dijkstra.findShortestPath(graph, "Unknown", "Hospital");
+        assertTrue(!unknownLocation.isFound(), "Path with an unknown start location should not be found.");
+
+        PathResult emptyRoute = DeliveryRoutePlanner.planRoute(graph, "Warehouse", List.of());
+        assertEquals(0, emptyRoute.getDistance(), "Route without delivery stops should have distance 0.");
+        assertEquals(List.of("Warehouse"), emptyRoute.getPath(), "Route without delivery stops should stay at the start.");
+
+        assertThrows(
+                () -> graph.addUndirectedRoad("A", "B", -1),
+                "Negative road distance should not be allowed."
+        );
+    }
+
     private static Graph createTestGraph() {
         Graph graph = new Graph();
 
@@ -102,5 +124,15 @@ public class DeliveryRoutePlannerTests {
         if (!expected.equals(actual)) {
             throw new AssertionError(message + " Expected: " + expected + ", actual: " + actual);
         }
+    }
+
+    private static void assertThrows(Runnable action, String message) {
+        try {
+            action.run();
+        } catch (IllegalArgumentException e) {
+            return;
+        }
+
+        throw new AssertionError(message);
     }
 }

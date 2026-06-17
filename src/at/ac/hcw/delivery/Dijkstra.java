@@ -12,6 +12,10 @@ public class Dijkstra {
     private static final int INFINITY = Integer.MAX_VALUE;
 
     public static PathResult findShortestPath(Graph graph, String start, String destination) {
+        if (!graph.containsLocation(start) || !graph.containsLocation(destination)) {
+            return new PathResult(Collections.emptyList(), 0);
+        }
+
         Map<String, Integer> distances = new HashMap<>();
         Map<String, String> previousLocations = new HashMap<>();
         Set<String> visited = new HashSet<>();
