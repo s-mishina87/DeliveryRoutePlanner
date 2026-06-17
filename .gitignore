@@ -4,6 +4,7 @@ out/
 !**/src/test/**/out/
 .kotlin
 .idea/workspace.xml
+.idea/vcs.xml
 .idea/shelf/
 .idea/httpRequests/
 
