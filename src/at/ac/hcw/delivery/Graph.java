@@ -20,7 +20,7 @@ public class Graph {
             throw new IllegalArgumentException("Road distance must not be negative.");
         }
 
-        // Дорога добавляется два раза, потому что по ней можно ехать в обе стороны.
+        // дорога добавляется два раза - по ней можно ехать в обе стороны
         addRoad(firstLocation, secondLocation, distance);
         addRoad(secondLocation, firstLocation, distance);
     }

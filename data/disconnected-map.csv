@@ -1,0 +1,5 @@
+from,to,distance
+Warehouse,Bakery,4
+Warehouse,Pharmacy,7
+Bakery,Bookstore,6
+Library,Museum,2

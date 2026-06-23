@@ -14,6 +14,29 @@ The application helps a delivery driver to:
 - show all locations reachable from a start location;
 - plan an approximate delivery route through several stops.
 
+## Graph Data Source
+
+The graph is not hardcoded in Java code. The application reads the city map from:
+
+```text
+data/city-map.csv
+```
+
+CSV format:
+
+```csv
+from,to,distance
+Warehouse,Bakery,4
+Warehouse,Pharmacy,7
+```
+
+Each CSV row describes one undirected road. `GraphCsvReader` reads the file and adds the road in both directions.
+
+Additional CSV files are used by tests:
+
+- `data/disconnected-map.csv` checks unreachable locations;
+- `data/invalid-map.csv` checks invalid input handling.
+
 ## Data Structure
 
 The main data structure is a weighted graph with an adjacency list.
@@ -54,11 +77,7 @@ Total distance: 12
 
 The implementation uses a simple loop instead of a priority queue. This makes the code easier to understand for a small educational project.
 
-Runtime:
-
-```text
-O(V^2 + E)
-```
+Runtime: $O(V^2 + E)$
 
 ### 2. Breadth-First Search (BFS)
 
@@ -75,11 +94,7 @@ Example:
 2 step(s): Supermarket
 ```
 
-Runtime:
-
-```text
-O(V + E)
-```
+Runtime: $O(V + E)$
 
 ### 3. Greedy Nearest Neighbor
 
@@ -87,23 +102,27 @@ Used to build an approximate delivery route through several stops.
 
 The algorithm starts at the selected location and repeatedly chooses the nearest unvisited delivery stop. It uses Dijkstra to calculate the shortest path to each possible next stop.
 
+Greedy chooses only the next required delivery stop. The shortest path to that stop may pass through other locations that are not delivery stops.
+
 This algorithm is fast and easy to understand, but it does not always guarantee the globally optimal route.
 
-Runtime for `k` delivery stops:
-
-```text
-O(k^2 * (V^2 + E))
-```
+Runtime for `k` delivery stops: $O(k^2 \cdot (V^2 + E))$
 
 At each step, the algorithm compares all remaining delivery stops. For each possible next stop, it calls Dijkstra to find the shortest path from the current location.
 
 ## Project Structure
 
 ```text
+data
+|-- city-map.csv
+|-- disconnected-map.csv
+`-- invalid-map.csv
+
 src/at/ac/hcw/delivery
 |-- Main.java
 |-- DeliveryApp.java
 |-- Graph.java
+|-- GraphCsvReader.java
 |-- Edge.java
 |-- PathResult.java
 |-- Dijkstra.java
@@ -133,7 +152,7 @@ The application starts a console menu:
 
 ## How To Run Tests
 
-The project uses a simple Java test class without JUnit.
+The project uses a simple Java test class without JUnit. Each test method checks one function or one business scenario separately, so it is easier to see what exactly fails after a code change.
 
 Run:
 
@@ -141,37 +160,44 @@ Run:
 at.ac.hcw.delivery.DeliveryRoutePlannerTests
 ```
 
-Expected output:
+Expected output ends with:
 
 ```text
-Testing graph...
-Testing Dijkstra...
-Testing BFS...
-Testing greedy route...
-Testing invalid input cases...
 All tests passed.
 ```
 
+The tests cover:
+
+- CSV graph loading;
+- invalid CSV distances;
+- case-insensitive location lookup;
+- Dijkstra shortest path, same-location path, unknown locations, and unreachable destinations;
+- BFS step counting and disconnected components;
+- greedy route planning with delivery stops, no stops, and unreachable stops.
+
 ## Example City Map
 
-```text
-Warehouse -- Bakery: 4
-Warehouse -- Pharmacy: 7
-Warehouse -- Office: 10
-Bakery -- Supermarket: 3
-Bakery -- Bookstore: 6
-Pharmacy -- Hospital: 5
-Pharmacy -- Supermarket: 4
-Supermarket -- Hospital: 5
-Supermarket -- School: 4
-Bookstore -- Office: 3
-Office -- School: 6
-Hospital -- Post Office: 4
-School -- Post Office: 2
-Bookstore -- School: 8
+The example city map is stored in `data/city-map.csv`. The same graph can be viewed as a scheme:
+
+```mermaid
+graph LR
+    Warehouse ---|4| Bakery
+    Warehouse ---|7| Pharmacy
+    Warehouse ---|10| Office
+    Bakery ---|3| Supermarket
+    Bakery ---|6| Bookstore
+    Pharmacy ---|5| Hospital
+    Pharmacy ---|4| Supermarket
+    Supermarket ---|5| Hospital
+    Supermarket ---|4| School
+    Bookstore ---|3| Office
+    Office ---|6| School
+    Hospital ---|4| PostOffice["Post Office"]
+    School ---|2| PostOffice
+    Bookstore ---|8| School
 ```
 
-All roads are undirected and have positive weights.
+All roads are undirected and must have non-negative weights.
 
 ## Course Requirements
 
@@ -181,4 +207,6 @@ This project fulfills the main requirements:
 - three algorithms: Dijkstra, BFS, Greedy Nearest Neighbor;
 - meaningful application context: delivery route planning;
 - Java implementation;
-- console-based user interaction.
+- console-based user interaction;
+- graph data loaded from CSV instead of hardcoded Java code;
+- unit-style tests for the business logic.

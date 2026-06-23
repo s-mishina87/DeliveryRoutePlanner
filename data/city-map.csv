@@ -1,0 +1,15 @@
+from,to,distance
+Warehouse,Bakery,4
+Warehouse,Pharmacy,7
+Warehouse,Office,10
+Bakery,Supermarket,3
+Bakery,Bookstore,6
+Pharmacy,Hospital,5
+Pharmacy,Supermarket,4
+Supermarket,Hospital,5
+Supermarket,School,4
+Bookstore,Office,3
+Office,School,6
+Hospital,Post Office,4
+School,Post Office,2
+Bookstore,School,8

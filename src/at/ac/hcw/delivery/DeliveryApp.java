@@ -1,16 +1,20 @@
 package at.ac.hcw.delivery;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
 public class DeliveryApp {
+    private static final Path DEFAULT_GRAPH_PATH = Path.of("data", "city-map.csv");
+
     private final Graph graph;
     private final Scanner scanner;
 
     public DeliveryApp() {
-        graph = createCityMap();
+        graph = loadCityMap();
         scanner = new Scanner(System.in);
     }
 
@@ -157,25 +161,11 @@ public class DeliveryApp {
         return stops;
     }
 
-    private Graph createCityMap() {
-        Graph graph = new Graph();
-
-        // Тестовая карта города. Все дороги undirected и имеют положительный вес.
-        graph.addUndirectedRoad("Warehouse", "Bakery", 4);
-        graph.addUndirectedRoad("Warehouse", "Pharmacy", 7);
-        graph.addUndirectedRoad("Warehouse", "Office", 10);
-        graph.addUndirectedRoad("Bakery", "Supermarket", 3);
-        graph.addUndirectedRoad("Bakery", "Bookstore", 6);
-        graph.addUndirectedRoad("Pharmacy", "Hospital", 5);
-        graph.addUndirectedRoad("Pharmacy", "Supermarket", 4);
-        graph.addUndirectedRoad("Supermarket", "Hospital", 5);
-        graph.addUndirectedRoad("Supermarket", "School", 4);
-        graph.addUndirectedRoad("Bookstore", "Office", 3);
-        graph.addUndirectedRoad("Office", "School", 6);
-        graph.addUndirectedRoad("Hospital", "Post Office", 4);
-        graph.addUndirectedRoad("School", "Post Office", 2);
-        graph.addUndirectedRoad("Bookstore", "School", 8);
-
-        return graph;
+    private Graph loadCityMap() {
+        try {
+            return GraphCsvReader.readFromCsv(DEFAULT_GRAPH_PATH);
+        } catch (IOException e) {
+            throw new IllegalStateException("Cannot read city map from " + DEFAULT_GRAPH_PATH, e);
+        }
     }
 }
