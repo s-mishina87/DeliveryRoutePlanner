@@ -2,9 +2,8 @@
   <configuration default="false" name="DeliveryRoutePlannerTest" type="JUnit" factoryName="JUnit">
     <module name="delivery-route-planner" />
     <option name="PACKAGE_NAME" value="at.ac.hcw.delivery" />
-    <option name="MAIN_CLASS_NAME" value="at.ac.hcw.delivery.DeliveryRoutePlannerTest" />
     <option name="METHOD_NAME" value="" />
-    <option name="TEST_OBJECT" value="class" />
+    <option name="TEST_OBJECT" value="package" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>
