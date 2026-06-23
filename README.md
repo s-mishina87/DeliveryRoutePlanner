@@ -198,15 +198,3 @@ graph LR
 ```
 
 All roads are undirected and must have non-negative weights.
-
-## Course Requirements
-
-This project fulfills the main requirements:
-
-- one data structure: weighted graph with adjacency list;
-- three algorithms: Dijkstra, BFS, Greedy Nearest Neighbor;
-- meaningful application context: delivery route planning;
-- Java implementation;
-- console-based user interaction;
-- graph data loaded from CSV instead of hardcoded Java code;
-- unit-style tests for the business logic.
