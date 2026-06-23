@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class Graph {
-    // Adjacency list: для каждой локации хранится список дорог к соседям.
+    // Для каждой локации храним список дорог к соседям.
     private final Map<String, List<Edge>> adjacencyList = new LinkedHashMap<>();
 
     public void addLocation(String location) {
@@ -20,7 +20,7 @@ public class Graph {
             throw new IllegalArgumentException("Road distance must not be negative.");
         }
 
-        // дорога добавляется два раза - по ней можно ехать в обе стороны
+        // Дорогу добавляем в обе стороны.
         addRoad(firstLocation, secondLocation, distance);
         addRoad(secondLocation, firstLocation, distance);
     }

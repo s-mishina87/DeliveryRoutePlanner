@@ -10,7 +10,7 @@ public class BreadthFirstSearch {
         Map<String, Integer> stepsFromStart = new LinkedHashMap<>();
         Queue<String> queue = new LinkedList<>();
 
-        // BFS работает слоями: сначала старт, потом соседи, потом соседи соседей.
+        // BFS идет слоями: сначала старт, потом соседи, потом соседи соседей.
         stepsFromStart.put(start, 0);
         queue.add(start);
 

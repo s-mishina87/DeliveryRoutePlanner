@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -132,6 +133,24 @@ public class DeliveryRoutePlannerTest {
 
         assertEquals(0, result.getDistance(), "Route without delivery stops should have distance 0.");
         assertEquals(List.of("Warehouse"), result.getPath(), "Route without delivery stops should stay at the start.");
+    }
+
+    @Test
+    public void greedyRouteAfterRemovingStartFromStops() throws IOException {
+        Graph graph = loadCityMap();
+        String start = "Warehouse";
+        List<String> stops = new ArrayList<>(List.of("Warehouse", "Hospital"));
+
+        assertTrue(DeliveryApp.removeStartFromStops(stops, start), "Start location should be removed from delivery stops.");
+
+        PathResult result = DeliveryRoutePlanner.planRoute(graph, start, stops);
+
+        assertEquals(12, result.getDistance(), "Route should go only to Hospital.");
+        assertEquals(
+                List.of("Warehouse", "Pharmacy", "Hospital"),
+                result.getPath(),
+                "Route should not add Warehouse as a delivery stop."
+        );
     }
 
     @Test

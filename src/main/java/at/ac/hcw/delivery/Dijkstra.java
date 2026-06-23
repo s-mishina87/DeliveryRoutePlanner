@@ -20,14 +20,14 @@ public class Dijkstra {
         Map<String, String> previousLocations = new HashMap<>();
         Set<String> visited = new HashSet<>();
 
-        // В начале все расстояния неизвестны, поэтому ставим "бесконечность".
+        // Сначала считаем, что расстояния до всех локаций неизвестны.
         for (String location : graph.getLocations()) {
             distances.put(location, INFINITY);
         }
         distances.put(start, 0);
 
         while (visited.size() < graph.getLocations().size()) {
-            // В простой версии Dijkstra мы каждый раз ищем ближайшую локацию обычным циклом.
+            // В этой простой версии ищем ближайшую локацию обычным циклом.
             String current = findNearestUnvisitedLocation(distances, visited);
 
             if (current == null) {
@@ -49,7 +49,7 @@ public class Dijkstra {
 
                 int newDistance = distances.get(current) + edge.getWeight();
 
-                // Если через current путь короче, запоминаем новую дистанцию и предыдущую локацию.
+                // Если нашли путь короче, запоминаем новое расстояние.
                 if (newDistance < distances.get(neighbor)) {
                     distances.put(neighbor, newDistance);
                     previousLocations.put(neighbor, current);
@@ -84,7 +84,7 @@ public class Dijkstra {
         List<String> path = new ArrayList<>();
         String current = destination;
 
-        // Идем назад от destination к start, потом разворачиваем список.
+        // Идем от финиша назад к старту, потом разворачиваем путь.
         while (current != null) {
             path.add(current);
 

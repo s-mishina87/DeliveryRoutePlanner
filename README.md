@@ -22,7 +22,7 @@ The city map is stored in a CSV file:
 data/city-map.csv
 ```
 
-This makes it easy to change roads or distances without editing the Java classes.
+This means I can change the map in the CSV file without changing the Java code.
 
 CSV format:
 
@@ -102,15 +102,19 @@ Runtime: $O(V + E)$
 
 Used to build an approximate delivery route through several stops.
 
-The algorithm starts at the selected location and repeatedly chooses the nearest unvisited delivery stop. It uses Dijkstra to calculate the shortest path to each possible next stop.
+The algorithm starts at the selected location. Then it always chooses the nearest delivery stop that was not visited yet.
 
-Greedy chooses only the next required delivery stop. The shortest path to that stop may pass through other locations that are not delivery stops.
+To find the nearest stop, it uses Dijkstra's algorithm.
 
-This algorithm is fast and easy to understand, but it does not always guarantee the globally optimal route.
+The shortest path to the next stop can go through other locations. Because of this, some locations can appear more than once in the final route.
+
+If the start location is also entered as a delivery stop, the program removes it from the stop list. This is because the route already starts there.
+
+This algorithm is simple and useful for a small city map. But it does not always find the best possible route.
 
 Runtime for `k` delivery stops: $O(k^2 \cdot (V^2 + E))$
 
-At each step, the algorithm compares all remaining delivery stops. For each possible next stop, it calls Dijkstra to find the shortest path from the current location.
+At each step, the algorithm checks the remaining delivery stops. For each stop, it calls Dijkstra to calculate the shortest path.
 
 ## Project Structure
 
@@ -156,11 +160,11 @@ The application starts a console menu:
 
 ## How To Run Tests
 
-The project uses JUnit 5. Each test method checks one function or one business scenario separately, so IntelliJ can show exactly which test passed or failed.
+The project uses JUnit 5 tests.
 
-In IntelliJ IDEA, open `src/test/java/at/ac/hcw/delivery/DeliveryRoutePlannerTest.java` and run the test class or a single test method.
+In IntelliJ IDEA, choose `DeliveryRoutePlannerTest` and click Run.
 
-If Maven is available, run:
+You can also run the tests with Maven:
 
 ```text
 mvn test
@@ -169,17 +173,19 @@ mvn test
 Expected result:
 
 ```text
+Tests run: 14, Failures: 0, Errors: 0, Skipped: 0
 BUILD SUCCESS
 ```
 
-The tests cover:
+The tests check the main business logic:
 
 - CSV graph loading;
 - invalid CSV distances;
 - case-insensitive location lookup;
-- Dijkstra shortest path, same-location path, unknown locations, and unreachable destinations;
-- BFS step counting and disconnected components;
-- greedy route planning with delivery stops, no stops, and unreachable stops.
+- shortest path with Dijkstra;
+- reachable locations with BFS;
+- greedy delivery route planning;
+- removing the start location from delivery stops.
 
 ## Example City Map
 

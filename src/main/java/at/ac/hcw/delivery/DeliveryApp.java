@@ -114,6 +114,10 @@ public class DeliveryApp {
         String start = askForLocation("Start: ");
         List<String> stops = askForStops();
 
+        if (removeStartFromStops(stops, start)) {
+            System.out.println("Start location removed from delivery stops: " + start);
+        }
+
         if (stops.isEmpty()) {
             System.out.println("No valid delivery stops entered.");
             return;
@@ -159,6 +163,10 @@ public class DeliveryApp {
         }
 
         return stops;
+    }
+
+    static boolean removeStartFromStops(List<String> stops, String start) {
+        return stops.remove(start);
     }
 
     private Graph loadCityMap() {

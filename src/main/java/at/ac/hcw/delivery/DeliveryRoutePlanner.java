@@ -17,7 +17,7 @@ public class DeliveryRoutePlanner {
             String nearestStop = null;
             PathResult nearestPath = new PathResult(Collections.emptyList(), 0);
 
-            // Greedy: выбираем ближайшую еще не посещенную остановку.
+            // Greedy выбирает ближайшую доставку из тех, где мы еще не были.
             for (String stop : unvisitedStops) {
                 PathResult pathToStop = Dijkstra.findShortestPath(graph, current, stop);
 
