@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/DeliveryRoutePlanner.iml" filepath="$PROJECT_DIR$/DeliveryRoutePlanner.iml" />
+      <module fileurl="file://$PROJECT_DIR$/delivery-route-planner.iml" filepath="$PROJECT_DIR$/delivery-route-planner.iml" />
     </modules>
   </component>
 </project>
