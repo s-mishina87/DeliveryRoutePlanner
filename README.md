@@ -34,7 +34,7 @@ Each CSV row describes one undirected road. `GraphCsvReader` reads the file and 
 
 Additional CSV files are used by tests:
 
-- `data/disconnected-map.csv` checks unreachable locations;
+- `data/disconnected-map.csv` checks unreachable locations and contains a separate test-only component, `Library -- Museum`;
 - `data/invalid-map.csv` checks invalid input handling.
 
 ## Data Structure
@@ -118,7 +118,7 @@ data
 |-- disconnected-map.csv
 `-- invalid-map.csv
 
-src/at/ac/hcw/delivery
+src/main/java/at/ac/hcw/delivery
 |-- Main.java
 |-- DeliveryApp.java
 |-- Graph.java
@@ -127,8 +127,10 @@ src/at/ac/hcw/delivery
 |-- PathResult.java
 |-- Dijkstra.java
 |-- BreadthFirstSearch.java
-|-- DeliveryRoutePlanner.java
-`-- DeliveryRoutePlannerTests.java
+`-- DeliveryRoutePlanner.java
+
+src/test/java/at/ac/hcw/delivery
+`-- DeliveryRoutePlannerTest.java
 ```
 
 ## How To Run
@@ -152,18 +154,20 @@ The application starts a console menu:
 
 ## How To Run Tests
 
-The project uses a simple Java test class without JUnit. Each test method checks one function or one business scenario separately, so it is easier to see what exactly fails after a code change.
+The project uses JUnit 5. Each test method checks one function or one business scenario separately, so IntelliJ can show exactly which test passed or failed.
 
-Run:
+In IntelliJ IDEA, open `src/test/java/at/ac/hcw/delivery/DeliveryRoutePlannerTest.java` and run the test class or a single test method.
+
+If Maven is available, run:
 
 ```text
-at.ac.hcw.delivery.DeliveryRoutePlannerTests
+mvn test
 ```
 
-Expected output ends with:
+Expected result:
 
 ```text
-All tests passed.
+BUILD SUCCESS
 ```
 
 The tests cover:
@@ -198,3 +202,16 @@ graph LR
 ```
 
 All roads are undirected and must have non-negative weights.
+
+## Test Disconnected Map
+
+`data/disconnected-map.csv` is not the main application map. It is a smaller test fixture used to check that Dijkstra, BFS, and greedy route planning correctly handle unreachable locations.
+
+```mermaid
+graph LR
+    Warehouse ---|4| Bakery
+    Warehouse ---|7| Pharmacy
+    Bakery ---|6| Bookstore
+
+    Library ---|2| Museum
+```

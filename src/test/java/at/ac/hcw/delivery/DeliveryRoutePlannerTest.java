@@ -1,65 +1,57 @@
 package at.ac.hcw.delivery;
 
+import org.junit.jupiter.api.Test;
+
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
-public class DeliveryRoutePlannerTests {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+class DeliveryRoutePlannerTest {
     private static final Path CITY_MAP_PATH = Path.of("data", "city-map.csv");
     private static final Path DISCONNECTED_MAP_PATH = Path.of("data", "disconnected-map.csv");
     private static final Path INVALID_MAP_PATH = Path.of("data", "invalid-map.csv");
 
-    public static void main(String[] args) throws IOException {
-        testGraphCsvReaderLoadsLocations();
-        testGraphCsvReaderLoadsUndirectedRoads();
-        testGraphCsvReaderRejectsInvalidDistance();
-        testGraphFindLocationIgnoreCase();
-        testDijkstraFindsShortestPath();
-        testDijkstraHandlesSameStartAndDestination();
-        testDijkstraHandlesUnknownLocation();
-        testDijkstraHandlesUnreachableDestination();
-        testBfsCountsStepsFromStart();
-        testBfsDoesNotCrossDisconnectedComponents();
-        testGreedyRouteVisitsNearestRemainingStops();
-        testGreedyRouteHandlesNoStops();
-        testGreedyRouteHandlesUnreachableStop();
-
-        System.out.println("All tests passed.");
-    }
-
-    private static void testGraphCsvReaderLoadsLocations() throws IOException {
-        System.out.println("Testing CSV reader loads locations...");
+    @Test
+    void graphCsvReaderLoadsLocations() throws IOException {
         Graph graph = loadCityMap();
+
         assertTrue(graph.containsLocation("Warehouse"), "Graph should contain Warehouse.");
         assertTrue(graph.containsLocation("Bakery"), "Graph should contain Bakery.");
         assertEquals(9, graph.getLocations().size(), "City map should contain 9 locations.");
     }
 
-    private static void testGraphCsvReaderLoadsUndirectedRoads() throws IOException {
-        System.out.println("Testing CSV reader loads undirected roads...");
+    @Test
+    void graphCsvReaderLoadsUndirectedRoads() throws IOException {
         Graph graph = loadCityMap();
 
         assertTrue(hasEdge(graph, "Warehouse", "Bakery", 4), "Warehouse should have a road to Bakery.");
         assertTrue(hasEdge(graph, "Bakery", "Warehouse", 4), "Bakery should have a road back to Warehouse.");
     }
 
-    private static void testGraphCsvReaderRejectsInvalidDistance() {
-        System.out.println("Testing CSV reader rejects invalid distances...");
+    @Test
+    void graphCsvReaderRejectsInvalidDistance() {
         assertThrows(
+                IllegalArgumentException.class,
                 () -> GraphCsvReader.readFromCsv(INVALID_MAP_PATH),
                 "Negative road distance from CSV should not be allowed."
         );
     }
 
-    private static void testGraphFindLocationIgnoreCase() throws IOException {
-        System.out.println("Testing graph location lookup...");
+    @Test
+    void graphFindLocationIgnoreCase() throws IOException {
         Graph graph = loadCityMap();
+
         assertEquals("Post Office", graph.findLocationIgnoreCase(" post office "), "Lookup should ignore case and spaces.");
     }
 
-    private static void testDijkstraFindsShortestPath() throws IOException {
-        System.out.println("Testing Dijkstra shortest path...");
+    @Test
+    void dijkstraFindsShortestPath() throws IOException {
         Graph graph = loadCityMap();
         PathResult result = Dijkstra.findShortestPath(graph, "Warehouse", "Hospital");
 
@@ -71,8 +63,8 @@ public class DeliveryRoutePlannerTests {
         );
     }
 
-    private static void testDijkstraHandlesSameStartAndDestination() throws IOException {
-        System.out.println("Testing Dijkstra same start and destination...");
+    @Test
+    void dijkstraHandlesSameStartAndDestination() throws IOException {
         Graph graph = loadCityMap();
         PathResult result = Dijkstra.findShortestPath(graph, "Warehouse", "Warehouse");
 
@@ -80,24 +72,24 @@ public class DeliveryRoutePlannerTests {
         assertEquals(List.of("Warehouse"), result.getPath(), "Path from a location to itself should contain only this location.");
     }
 
-    private static void testDijkstraHandlesUnknownLocation() throws IOException {
-        System.out.println("Testing Dijkstra unknown location...");
+    @Test
+    void dijkstraHandlesUnknownLocation() throws IOException {
         Graph graph = loadCityMap();
         PathResult result = Dijkstra.findShortestPath(graph, "Unknown", "Hospital");
 
-        assertTrue(!result.isFound(), "Path with an unknown start location should not be found.");
+        assertFalse(result.isFound(), "Path with an unknown start location should not be found.");
     }
 
-    private static void testDijkstraHandlesUnreachableDestination() throws IOException {
-        System.out.println("Testing Dijkstra unreachable destination...");
+    @Test
+    void dijkstraHandlesUnreachableDestination() throws IOException {
         Graph graph = loadDisconnectedMap();
         PathResult result = Dijkstra.findShortestPath(graph, "Warehouse", "Museum");
 
-        assertTrue(!result.isFound(), "Path to a disconnected destination should not be found.");
+        assertFalse(result.isFound(), "Path to a disconnected destination should not be found.");
     }
 
-    private static void testBfsCountsStepsFromStart() throws IOException {
-        System.out.println("Testing BFS step counting...");
+    @Test
+    void bfsCountsStepsFromStart() throws IOException {
         Graph graph = loadCityMap();
         Map<String, Integer> result = BreadthFirstSearch.findReachableLocations(graph, "Warehouse");
 
@@ -108,16 +100,16 @@ public class DeliveryRoutePlannerTests {
         assertEquals(9, result.size(), "All 9 locations should be reachable.");
     }
 
-    private static void testBfsDoesNotCrossDisconnectedComponents() throws IOException {
-        System.out.println("Testing BFS disconnected components...");
+    @Test
+    void bfsDoesNotCrossDisconnectedComponents() throws IOException {
         Graph graph = loadDisconnectedMap();
         Map<String, Integer> result = BreadthFirstSearch.findReachableLocations(graph, "Warehouse");
 
-        assertTrue(!result.containsKey("Museum"), "BFS should not reach locations in another component.");
+        assertFalse(result.containsKey("Museum"), "BFS should not reach locations in another component.");
     }
 
-    private static void testGreedyRouteVisitsNearestRemainingStops() throws IOException {
-        System.out.println("Testing greedy route...");
+    @Test
+    void greedyRouteVisitsNearestRemainingStops() throws IOException {
         Graph graph = loadCityMap();
         PathResult result = DeliveryRoutePlanner.planRoute(
                 graph,
@@ -133,8 +125,8 @@ public class DeliveryRoutePlannerTests {
         );
     }
 
-    private static void testGreedyRouteHandlesNoStops() throws IOException {
-        System.out.println("Testing greedy route without stops...");
+    @Test
+    void greedyRouteHandlesNoStops() throws IOException {
         Graph graph = loadCityMap();
         PathResult result = DeliveryRoutePlanner.planRoute(graph, "Warehouse", List.of());
 
@@ -142,12 +134,12 @@ public class DeliveryRoutePlannerTests {
         assertEquals(List.of("Warehouse"), result.getPath(), "Route without delivery stops should stay at the start.");
     }
 
-    private static void testGreedyRouteHandlesUnreachableStop() throws IOException {
-        System.out.println("Testing greedy route with unreachable stop...");
+    @Test
+    void greedyRouteHandlesUnreachableStop() throws IOException {
         Graph graph = loadDisconnectedMap();
         PathResult result = DeliveryRoutePlanner.planRoute(graph, "Warehouse", List.of("Museum"));
 
-        assertTrue(!result.isFound(), "Route with an unreachable stop should not be found.");
+        assertFalse(result.isFound(), "Route with an unreachable stop should not be found.");
     }
 
     private static Graph loadCityMap() throws IOException {
@@ -166,33 +158,5 @@ public class DeliveryRoutePlannerTests {
         }
 
         return false;
-    }
-
-    private static void assertTrue(boolean condition, String message) {
-        if (!condition) {
-            throw new AssertionError(message);
-        }
-    }
-
-    private static void assertEquals(Object expected, Object actual, String message) {
-        if (!expected.equals(actual)) {
-            throw new AssertionError(message + " Expected: " + expected + ", actual: " + actual);
-        }
-    }
-
-    private static void assertThrows(ThrowingRunnable action, String message) {
-        try {
-            action.run();
-        } catch (IllegalArgumentException e) {
-            return;
-        } catch (Exception e) {
-            throw new AssertionError(message + " Unexpected exception: " + e);
-        }
-
-        throw new AssertionError(message);
-    }
-
-    private interface ThrowingRunnable {
-        void run() throws Exception;
     }
 }
