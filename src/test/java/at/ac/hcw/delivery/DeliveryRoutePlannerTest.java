@@ -18,7 +18,7 @@ public class DeliveryRoutePlannerTest {
     private static final Path INVALID_MAP_PATH = Path.of("data", "invalid-map.csv");
 
     @Test
-    void graphCsvReaderLoadsLocations() throws IOException {
+    public void graphCsvReaderLoadsLocations() throws IOException {
         Graph graph = loadCityMap();
 
         assertTrue(graph.containsLocation("Warehouse"), "Graph should contain Warehouse.");
@@ -27,7 +27,7 @@ public class DeliveryRoutePlannerTest {
     }
 
     @Test
-    void graphCsvReaderLoadsUndirectedRoads() throws IOException {
+    public void graphCsvReaderLoadsUndirectedRoads() throws IOException {
         Graph graph = loadCityMap();
 
         assertTrue(hasEdge(graph, "Warehouse", "Bakery", 4), "Warehouse should have a road to Bakery.");
@@ -35,7 +35,7 @@ public class DeliveryRoutePlannerTest {
     }
 
     @Test
-    void graphCsvReaderRejectsInvalidDistance() {
+    public void graphCsvReaderRejectsInvalidDistance() {
         assertThrows(
                 IllegalArgumentException.class,
                 () -> GraphCsvReader.readFromCsv(INVALID_MAP_PATH),
@@ -44,14 +44,14 @@ public class DeliveryRoutePlannerTest {
     }
 
     @Test
-    void graphFindLocationIgnoreCase() throws IOException {
+    public void graphFindLocationIgnoreCase() throws IOException {
         Graph graph = loadCityMap();
 
         assertEquals("Post Office", graph.findLocationIgnoreCase(" post office "), "Lookup should ignore case and spaces.");
     }
 
     @Test
-    void dijkstraFindsShortestPath() throws IOException {
+    public void dijkstraFindsShortestPath() throws IOException {
         Graph graph = loadCityMap();
         PathResult result = Dijkstra.findShortestPath(graph, "Warehouse", "Hospital");
 
@@ -64,7 +64,7 @@ public class DeliveryRoutePlannerTest {
     }
 
     @Test
-    void dijkstraHandlesSameStartAndDestination() throws IOException {
+    public void dijkstraHandlesSameStartAndDestination() throws IOException {
         Graph graph = loadCityMap();
         PathResult result = Dijkstra.findShortestPath(graph, "Warehouse", "Warehouse");
 
@@ -73,7 +73,7 @@ public class DeliveryRoutePlannerTest {
     }
 
     @Test
-    void dijkstraHandlesUnknownLocation() throws IOException {
+    public void dijkstraHandlesUnknownLocation() throws IOException {
         Graph graph = loadCityMap();
         PathResult result = Dijkstra.findShortestPath(graph, "Unknown", "Hospital");
 
@@ -81,7 +81,7 @@ public class DeliveryRoutePlannerTest {
     }
 
     @Test
-    void dijkstraHandlesUnreachableDestination() throws IOException {
+    public void dijkstraHandlesUnreachableDestination() throws IOException {
         Graph graph = loadDisconnectedMap();
         PathResult result = Dijkstra.findShortestPath(graph, "Warehouse", "Museum");
 
@@ -89,7 +89,7 @@ public class DeliveryRoutePlannerTest {
     }
 
     @Test
-    void bfsCountsStepsFromStart() throws IOException {
+    public void bfsCountsStepsFromStart() throws IOException {
         Graph graph = loadCityMap();
         Map<String, Integer> result = BreadthFirstSearch.findReachableLocations(graph, "Warehouse");
 
@@ -101,7 +101,7 @@ public class DeliveryRoutePlannerTest {
     }
 
     @Test
-    void bfsDoesNotCrossDisconnectedComponents() throws IOException {
+    public void bfsDoesNotCrossDisconnectedComponents() throws IOException {
         Graph graph = loadDisconnectedMap();
         Map<String, Integer> result = BreadthFirstSearch.findReachableLocations(graph, "Warehouse");
 
@@ -109,7 +109,7 @@ public class DeliveryRoutePlannerTest {
     }
 
     @Test
-    void greedyRouteVisitsNearestRemainingStops() throws IOException {
+    public void greedyRouteVisitsNearestRemainingStops() throws IOException {
         Graph graph = loadCityMap();
         PathResult result = DeliveryRoutePlanner.planRoute(
                 graph,
@@ -126,7 +126,7 @@ public class DeliveryRoutePlannerTest {
     }
 
     @Test
-    void greedyRouteHandlesNoStops() throws IOException {
+    public void greedyRouteHandlesNoStops() throws IOException {
         Graph graph = loadCityMap();
         PathResult result = DeliveryRoutePlanner.planRoute(graph, "Warehouse", List.of());
 
@@ -135,7 +135,7 @@ public class DeliveryRoutePlannerTest {
     }
 
     @Test
-    void greedyRouteHandlesUnreachableStop() throws IOException {
+    public void greedyRouteHandlesUnreachableStop() throws IOException {
         Graph graph = loadDisconnectedMap();
         PathResult result = DeliveryRoutePlanner.planRoute(graph, "Warehouse", List.of("Museum"));
 
