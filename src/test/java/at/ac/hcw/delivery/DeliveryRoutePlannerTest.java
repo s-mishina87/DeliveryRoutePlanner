@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class DeliveryRoutePlannerTest {
+public class DeliveryRoutePlannerTest {
     private static final Path CITY_MAP_PATH = Path.of("data", "city-map.csv");
     private static final Path DISCONNECTED_MAP_PATH = Path.of("data", "disconnected-map.csv");
     private static final Path INVALID_MAP_PATH = Path.of("data", "invalid-map.csv");
