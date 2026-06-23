@@ -16,11 +16,13 @@ The application helps a delivery driver to:
 
 ## Graph Data Source
 
-The graph is not hardcoded in Java code. The application reads the city map from:
+The city map is stored in a CSV file:
 
 ```text
 data/city-map.csv
 ```
+
+This makes it easy to change roads or distances without editing the Java classes.
 
 CSV format:
 
@@ -30,7 +32,7 @@ Warehouse,Bakery,4
 Warehouse,Pharmacy,7
 ```
 
-Each CSV row describes one undirected road. `GraphCsvReader` reads the file and adds the road in both directions.
+Each row describes one undirected road. `GraphCsvReader` reads the file and adds the road in both directions.
 
 Additional CSV files are used by tests:
 
